@@ -3,467 +3,831 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>آسان خرید - خرید آسان، زندگی بهتر</title>
+    <title>آسان خرید | خرید آسان، تحویل سریع</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-        :root { --primary: #2563eb; --success: #16a34a; --danger: #dc2626; --light: #f8fafc; --dark: #1e293b; }
-        body { background: var(--light); color: var(--dark); }
-        .page { display: none; min-height: 100vh; }
-        .page.active { display: block; }
-        
-        /* === هدر === */
-        header { background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 100; }
-        .nav { max-width: 1200px; margin: 0 auto; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-        .logo { font-size: 24px; font-weight: bold; color: var(--primary); text-decoration: none; }
-        .nav-links a { margin-right: 15px; text-decoration: none; color: var(--dark); font-weight: 500; font-size: 15px; }
-        .nav-links a:hover { color: var(--primary); }
-        .seller-btn { background: var(--primary); color: white !important; padding: 8px 16px; border-radius: 6px; }
-        .logout-btn { background: var(--danger); color: white !important; padding: 8px 16px; border-radius: 6px; }
-        
-        /* === صفحه اصلی === */
-        .hero { text-align: center; padding: 50px 20px 30px; }
-        .hero h1 { font-size: 32px; margin-bottom: 10px; color: var(--dark); }
-        .hero p { font-size: 16px; color: #64748b; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        h2.section-title { text-align: center; margin: 40px 0 25px; font-size: 24px; color: var(--dark); }
-        
-        /* فیلتر دسته بندی */
-        .filter-bar { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 30px; }
-        .filter-btn { padding: 8px 18px; border-radius: 20px; border: none; background: white; color: var(--dark); cursor: pointer; font-size: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .filter-btn.active { background: var(--primary); color: white; }
-        
-        /* لیست محصولات */
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
-        .product-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: transform 0.2s; }
-        .product-card:hover { transform: translateY(-4px); }
-        .product-img { width: 100%; height: 200px; background: #e2e8f0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .product-img img { width: 100%; height: 100%; object-fit: cover; }
-        .product-info { padding: 15px; }
-        .product-name { font-size: 16px; font-weight: 600; margin-bottom: 6px; color: var(--dark); }
-        .product-desc { font-size: 13px; color: #64748b; margin-bottom: 12px; }
-        .product-price { display: flex; align-items: center; justify-content: space-between; }
-        .price { font-size: 17px; font-weight: bold; color: var(--success); }
-        .price.discounted { color: var(--danger); }
-        .old-price { font-size: 13px; color: #94a3b8; text-decoration: line-through; margin-left: 6px; }
-        .view-btn { background: var(--primary); color: white; border: none; padding: 7px 14px; border-radius: 6px; font-size: 14px; cursor: pointer; }
-        
-        footer { background: var(--dark); color: white; text-align: center; padding: 30px; margin-top: 60px; }
-        
-        /* === فرم‌ها === */
-        .form-wrapper { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 30px 20px; background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%); }
-        .form-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%; max-width: 480px; }
-        .form-box h2 { text-align: center; color: var(--primary); margin-bottom: 25px; }
-        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 15px; }
-        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); }
-        button { padding: 12px 20px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: 500; transition: 0.2s; }
-        .btn-primary { background: var(--primary); color: white; width: 100%; }
-        .btn-primary:hover { background: #1d4ed8; }
-        .link-text { text-align: center; margin-top: 20px; font-size: 14px; color: #64748b; }
-        .link-text span { color: var(--primary); cursor: pointer; font-weight: 500; }
-        .link-text span:hover { text-decoration: underline; }
-        .error-msg { color: var(--danger); text-align: center; margin-bottom: 15px; display: none; }
-        
-        /* === داشبورد فروشنده === */
-        .dashboard-header { background: white; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-        .dashboard-header h1 { font-size: 22px; color: var(--primary); }
-        .welcome-box { background: #dbeafe; padding: 20px; border-radius: 10px; margin: 30px 20px; max-width: 1200px; margin-left: auto; margin-right: auto; }
-        .welcome-box h3 { color: #1e40af; font-size: 17px; margin-bottom: 5px; }
-        .grid { max-width: 1200px; margin: 0 auto 40px; padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-        @media(max-width: 768px) { .grid { grid-template-columns: 1fr; } .nav-links { margin-top: 10px; } }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .card h3 { color: var(--dark); margin-bottom: 20px; font-size: 18px; }
-        .product-item { border-bottom: 1px solid #eee; padding: 15px 0; }
-        .product-item h4 { color: var(--dark); margin-bottom: 5px; font-size: 15px; }
-        .product-item p { font-size: 13px; color: #64748b; margin-bottom: 3px; }
-        .prod-preview-img { width: 60px; height: 60px; border-radius: 6px; object-fit: cover; margin: 5px 8px 5px 0; }
-        .del-btn { background: var(--danger); color: white; padding: 6px 12px; font-size: 13px; margin-top: 8px; }
-        .del-btn:hover { background: #b91c1c; }
-        .empty-state { text-align: center; color: #94a3b8; padding: 40px 20px; }
-        .upload-preview { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
-        .upload-preview img { width: 70px; height: 70px; object-fit: cover; border-radius: 6px; border: 2px solid #ddd; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Tahoma, Arial, sans-serif;
+        }
+
+        body {
+            background: #f8fafc;
+            min-height: 100vh;
+            color: #1e293b;
+        }
+
+        /* ===== منوی بالایی ===== */
+        .top-nav {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: 14px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(37,99,235,0.15);
+        }
+
+        .nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .menu-toggle {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .menu-dropdown {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: #1e40af;
+            border-radius: 0 0 12px 12px;
+            margin: 0 -20px -14px -20px;
+            padding: 0 20px;
+        }
+
+        .menu-dropdown.open {
+            max-height: 300px;
+            padding-bottom: 14px;
+        }
+
+        .menu-item {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item:hover {
+            color: #bfdbfe;
+        }
+
+        /* ===== کانتینر اصلی ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 15px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e40af;
+            margin: 10px 0 20px;
+        }
+
+        /* ===== محصولات ===== */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 18px rgba(37,99,235,0.1);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #e2e8f0;
+        }
+
+        .product-body {
+            padding: 16px;
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .product-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #dc2626;
+            margin-bottom: 12px;
+        }
+
+        .order-btn {
+            width: 100%;
+            padding: 10px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* ===== پنل فروشنده و دلیوری ===== */
+        .panel-section {
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: none;
+        }
+
+        .panel-section.active {
+            display: block;
+        }
+
+        .hidden-section {
+            display: none !important;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: #f0f7ff;
+            padding: 18px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-num {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #475569;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            padding: 12px 10px;
+            text-align: right;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f1f5f9;
+            font-weight: 600;
+        }
+
+        select, input, button {
+            padding: 8px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-success {
+            background: #16a34a;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        .btn-whatsapp {
+            background: #25d366;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        .auth-box {
+            max-width: 400px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .auth-box input {
+            width: 100%;
+            margin-bottom: 12px;
+            padding: 12px;
+        }
+
+        /* ===== فرم سفارش ===== */
+        .order-form-wrap {
+            background: white;
+            border-radius: 14px;
+            padding: 25px;
+            margin: 40px 0;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .submit-order {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .status-msg {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 15px;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <!-- ================================== -->
-    <!-- صفحه اصلی -->
-    <!-- ================================== -->
-    <div id="page-home" class="page active">
-        <header>
-            <div class="nav">
-                <span class="logo">آسان خرید</span>
-                <div class="nav-links">
-                    <a href="#" onclick="showPage('home')">صفحه اصلی</a>
-                    <a href="#products">محصولات</a>
-                    <a class="seller-btn" href="#" onclick="showPage('login')">فروشنده هستید؟</a>
+    <!-- ===== منوی بالایی ===== -->
+    <nav class="top-nav">
+        <div class="nav-header">
+            <span class="logo">🛒 آسان خرید</span>
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        </div>
+        <div class="menu-dropdown" id="mainMenu">
+            <div class="menu-item" onclick="showSection('customerPage')">🏠 صفحه اصلی</div>
+            <div class="menu-item" onclick="showSection('sellerLogin')">👤 پنل فروشنده</div>
+            <div class="menu-item" onclick="showSection('deliveryPanel')">🚚 مدیریت دلیوری</div>
+        </div>
+    </nav>
+
+    <div class="container" id="customerPage">
+        <!-- ===== محصولات ===== -->
+        <h2 class="section-title">🛍️ محصولات ما</h2>
+        <div class="products-grid" id="productsList">
+            <!-- محصول ۱ -->
+            <div class="product-card">
+                <img src="https://via.placeholder.com/300x200/e2e8f0/475569?text=لباس+زنانه" class="product-img" alt="لباس زنانه">
+                <div class="product-body">
+                    <h3 class="product-name">لباس زنانه شیک</h3>
+                    <p class="product-price">۱,۲۰۰ افغانی</p>
+                    <button class="order-btn" onclick="scrollToOrderForm('لباس زنانه شیک')">📝 سفارش</button>
                 </div>
             </div>
-        </header>
 
-        <section class="hero">
-            <h1>خوش آمدید به آسان خرید</h1>
-            <p>بهترین و مطمئن‌ترین بازار خرید و فروش در افغانستان</p>
-        </section>
-
-        <div class="container" id="products">
-            <h2 class="section-title">محصولات</h2>
-            
-            <!-- فیلتر دسته‌بندی -->
-            <div class="filter-bar">
-                <button class="filter-btn active" onclick="filterProducts('all', this)">همه</button>
-                <button class="filter-btn" onclick="filterProducts('زنانه', this)">لباس زنانه</button>
-                <button class="filter-btn" onclick="filterProducts('مردانه', this)">لباس مردانه</button>
-                <button class="filter-btn" onclick="filterProducts('کودک', this)">لباس کودک</button>
-                <button class="filter-btn" onclick="filterProducts('برقی', this)">لوازم برقی</button>
-                <button class="filter-btn" onclick="filterProducts('خانه', this)">لوازم خانه</button>
-                <button class="filter-btn" onclick="filterProducts('تکنالوژی', this)">تکنالوژی</button>
+            <!-- محصول ۲ -->
+            <div class="product-card">
+                <img src="https://via.placeholder.com/300x200/e2e8f0/475569?text=کت+مردانه" class="product-img" alt="کت مردانه">
+                <div class="product-body">
+                    <h3 class="product-name">کت مردانه</h3>
+                    <p class="product-price">۲,۵۰۰ افغانی</p>
+                    <button class="order-btn" onclick="scrollToOrderForm('کت مردانه')">📝 سفارش</button>
+                </div>
             </div>
 
-            <!-- لیست محصولات -->
-            <div class="products-grid" id="productsContainer">
-                <div class="empty-state" style="grid-column: 1/-1;">هنوز محصولی موجود نیست.</div>
-            </div>
-        </div>
-
-        <footer>
-            <p>© ۱۴۰۵ آسان خرید — همه حقوق محفوظ است</p>
-        </footer>
-    </div>
-
-    <!-- ================================== -->
-    <!-- صفحه ثبت‌نام فروشنده -->
-    <!-- ================================== -->
-    <div id="page-register" class="page">
-        <div class="form-wrapper">
-            <div class="form-box">
-                <h2>ثبت‌نام فروشنده</h2>
-                <form id="registerForm">
-                    <input type="text" id="reg-name" placeholder="نام کامل" required>
-                    <input type="tel" id="reg-whatsapp" placeholder="شماره واتساپ (مثال: ۰۷۰۰۱۲۳۴۵۶)" required>
-                    <input type="email" id="reg-email" placeholder="آدرس ایمیل" required>
-                    <input type="password" id="reg-pass" placeholder="رمز عبور" required>
-                    <textarea id="reg-address" placeholder="آدرس کامل فروشگاه" rows="3" required></textarea>
-                    <button type="submit" class="btn-primary">ثبت‌نام</button>
-                </form>
-                <div class="link-text">
-                    قبلاً حساب دارید؟ <span onclick="showPage('login')">وارد شوید</span><br>
-                    <span onclick="showPage('home')">بازگشت به صفحه اصلی</span>
+            <!-- محصول ۳ -->
+            <div class="product-card">
+                <img src="https://via.placeholder.com/300x200/e2e8f0/475569?text=گوشی+موبایل" class="product-img" alt="گوشی موبایل">
+                <div class="product-body">
+                    <h3 class="product-name">گوشی موبایل</h3>
+                    <p class="product-price">۱۵,۵۰۰ افغانی</p>
+                    <button class="order-btn" onclick="scrollToOrderForm('گوشی موبایل')">📝 سفارش</button>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- ================================== -->
-    <!-- صفحه ورود فروشنده -->
-    <!-- ================================== -->
-    <div id="page-login" class="page">
-        <div class="form-wrapper">
-            <div class="form-box">
-                <h2>ورود فروشنده</h2>
-                <div class="error-msg" id="login-error">ایمیل یا رمز عبور اشتباه است!</div>
-                <form id="loginForm">
-                    <input type="email" id="login-email" placeholder="ایمیل خود را وارد کنید" required>
-                    <input type="password" id="login-pass" placeholder="رمز عبور را وارد کنید" required>
-                    <button type="submit" class="btn-primary">ورود</button>
-                </form>
-                <div class="link-text">
-                    حساب ندارید؟ <span onclick="showPage('register')">ثبت‌نام کنید</span><br>
-                    <span onclick="showPage('home')">بازگشت به صفحه اصلی</span>
+        <!-- ===== فرم سفارش ===== -->
+        <div class="order-form-wrap" id="orderFormSection">
+            <h2 class="section-title">📦 ثبت سفارش و دلیوری</h2>
+            <form id="orderForm">
+                <div class="form-group">
+                    <label>👤 نام کامل</label>
+                    <input type="text" id="custName" required placeholder="نام خود را بنویسید">
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ================================== -->
-    <!-- صفحه داشبورد فروشنده -->
-    <!-- ================================== -->
-    <div id="page-dashboard" class="page">
-        <div class="dashboard-header">
-            <h1>داشبورد فروشنده</h1>
-            <button class="logout-btn" onclick="logout()">خروج از حساب</button>
-        </div>
-
-        <div class="welcome-box">
-            <h3>سلام، خوش آمدید! 👋</h3>
-            <p id="seller-details">لطفاً وارد حساب خود شوید.</p>
-        </div>
-
-        <div class="grid">
-            <!-- فرم اضافه کردن محصول -->
-            <div class="card">
-                <h3>➕ اضافه کردن محصول جدید</h3>
-                <form id="productForm">
-                    <input type="text" id="p-name" placeholder="نام محصول" required>
-                    <textarea id="p-desc" placeholder="توضیحات محصول" rows="2" required></textarea>
-                    <input type="number" id="p-price" placeholder="قیمت اصلی (افغانی)" required>
-                    <input type="number" id="p-discount" placeholder="قیمت تخفیفی (اختیاری)">
-                    <select id="p-cat" required>
-                        <option value="">انتخاب دسته‌بندی</option>
-                        <option value="زنانه">لباس زنانه</option>
-                        <option value="مردانه">لباس مردانه</option>
-                        <option value="کودک">لباس کودک</option>
-                        <option value="برقی">لوازم برقی</option>
-                        <option value="خانه">لوازم خانه</option>
-                        <option value="تکنالوژی">تکنالوژی</option>
+                <div class="form-group">
+                    <label>📞 شماره تماس</label>
+                    <input type="tel" id="custPhone" required placeholder="۰۷۰۰ ۱۲۳ ۴۵۶">
+                </div>
+                <div class="form-group">
+                    <label>🛍️ محصول</label>
+                    <input type="text" id="custProduct" required placeholder="نام محصول">
+                </div>
+                <div class="form-group">
+                    <label>📍 آدرس دلیوری</label>
+                    <textarea id="custAddress" required placeholder="ولایت، ولسوالی، ناحیه، کوچه، خانه" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>💳 روش پرداخت</label>
+                    <select id="custPay">
+                        <option value="نقدی">💰 نقدی هنگام تحویل</option>
+                        <option value="حساب موبایل">📱 حساب موبایل</option>
                     </select>
-                    
-                    <!-- آپلود عکس -->
-                    <label style="display:block; margin: 10px 0 5px; font-weight:500;">عکس محصول (حداکثر ۳ عکس):</label>
-                    <input type="file" id="p-images" accept="image/*" multiple onchange="previewImages(this)">
-                    <div class="upload-preview" id="imgPreviewContainer"></div>
-                    
-                    <button type="submit" class="btn-primary" style="margin-top: 15px;">ذخیره محصول</button>
-                </form>
-            </div>
-
-            <!-- لیست محصولات -->
-            <div class="card">
-                <h3>📦 محصولات شما</h3>
-                <div id="product-list">
-                    <div class="empty-state">هنوز هیچ محصولی اضافه نکرده‌اید.</div>
                 </div>
-            </div>
+                <div class="form-group">
+                    <label>🚚 هزینه دلیوری (افغانی)</label>
+                    <input type="text" id="deliveryFee" required placeholder="مثال: ۵۰۰">
+                </div>
+                <div class="form-group">
+                    <label>📝 توضیحات اضافی</label>
+                    <textarea id="custNote" placeholder="اختیاری" rows="2"></textarea>
+                </div>
+                <button type="submit" class="submit-order">✅ ثبت سفارش</button>
+                <div id="orderStatus" class="status-msg"></div>
+            </form>
         </div>
     </div>
 
-    <!-- ================================== -->
-    <!-- جاوا اسکریپت -->
-    <!-- ================================== -->
+    <!-- ===== ورود فروشنده ===== -->
+    <div class="hidden-section" id="sellerLogin">
+        <div class="auth-box">
+            <h2>👤 ورود فروشنده</h2>
+            <p style="color: #64748b; margin-bottom: 20px;">فروشنده محترم لطفاً وارد شوید</p>
+            <input type="email" id="sellerEmail" placeholder="ایمیل">
+            <input type="text" id="sellerPhone" placeholder="شماره تماس">
+            <input type="password" id="sellerPass" placeholder="رمز ورود">
+            <button class="btn-primary" style="width: 100%;" onclick="sellerLogin()">ورود</button>
+        </div>
+    </div>
+
+    <!-- ===== پنل فروشنده ===== -->
+    <div class="hidden-section container" id="sellerPanel">
+        <h2 class="section-title">👤 پنل فروشنده</h2>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-num" id="totalProducts">۳</div>
+                <div class="stat-label">تعداد محصولات</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" id="totalSales">۱۲</div>
+                <div class="stat-label">تعداد فروش</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" id="totalIncome">۱۵,۲۰۰</div>
+                <div class="stat-label">مجموع فروش (افغانی)</div>
+            </div>
+        </div>
+
+        <h3 style="margin: 30px 0 15px; font-size: 17px;">📋 سفارشات جدید</h3>
+        <table id="sellerOrdersTable">
+            <thead>
+                <tr>
+                    <th>محصول</th>
+                    <th>مشتری</th>
+                    <th>شماره</th>
+                    <th>آدرس</th>
+                    <th>دلیور</th>
+                    <th>وضعیت</th>
+                    <th>پیام</th>
+                </tr>
+            </thead>
+            <tbody id="ordersTableBody">
+                <!-- سفارشات اینجا نمایش داده می‌شوند -->
+            </tbody>
+        </table>
+
+        <h3 style="margin: 30px 0 15px; font-size: 17px;">➕ اضافه کردن محصول جدید</h3>
+        <div style="background: #f8fafc; padding: 20px; border-radius: 10px; margin-bottom: 30px;">
+            <input type="text" id="newProdName" placeholder="نام محصول" style="width: 100%; margin-bottom: 10px;">
+            <input type="text" id="newProdPrice" placeholder="قیمت (افغانی)" style="width: 100%; margin-bottom: 10px;">
+            <input type="text" id="newProdImg" placeholder="لینک عکس (اختیاری)" style="width: 100%; margin-bottom: 10px;">
+            <button class="btn-primary" onclick="addProduct()">✅ اضافه کردن محصول</button>
+        </div>
+    </div>
+
+    <!-- ===== مدیریت دلیوری ===== -->
+    <div class="hidden-section container" id="deliveryPanel">
+        <h2 class="section-title">🚚 مدیریت دلیوری</h2>
+
+        <h3 style="margin: 20px 0 15px; font-size: 17px;">👤 ثبت نام دلیور جدید</h3>
+        <div style="background: #f8fafc; padding: 20px; border-radius: 10px; margin-bottom: 30px;">
+            <input type="text" id="delivName" placeholder="نام دلیور" style="width: 100%; margin-bottom: 10px;">
+            <input type="text" id="delivPhone" placeholder="شماره تماس" style="width: 100%; margin-bottom: 10px;">
+            <button class="btn-primary" onclick="addDeliveryPerson()">✅ ثبت دلیور</button>
+        </div>
+
+        <h3 style="margin: 30px 0 15px; font-size: 17px;">لیست دلیورها</h3>
+        <table id="deliverersTable">
+            <thead>
+                <tr>
+                    <th>نام</th>
+                    <th>شماره</th>
+                    <th>تعداد تحویل داده</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody id="deliverersTableBody">
+                <tr>
+                    <td>علی محمدی</td>
+                    <td>۰۷۰۰ ۱۱۱ ۲۲۲</td>
+                    <td>۸</td>
+                    <td><button class="btn-danger" onclick="removeDeliverer(this)">حذف</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3 style="margin: 30px 0 15px; font-size: 17px;">📦 اختصاص سفارش به دلیور</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>سفارش</th>
+                    <th>مشتری</th>
+                    <th>انتخاب دلیور</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody id="assignDeliveryBody">
+                <!-- اختصاص سفارش اینجا نمایش داده می‌شود -->
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        <p>© ۱۴۰۶ آسان خرید | خرید آسان، تحویل سریع</p>
+    </footer>
+
     <script>
-        let currentEmail = null;
-        let seller = null;
-        let uploadedImages = [];
-        let allProducts = [];
-        let currentFilter = 'all';
+        // === متغیرهای اصلی ===
+        const APPSCRIPT_URL = "https://script.google.com/macros/s/AKfycbxKqTj3oOWwGZYNdiOYLI3eG4jRRnGbqRLTiD2jD5Eo7Pu2CjEoBfYOiMemow8dYdo2/exec";
+        let orders = [];
+        let deliverers = [
+            {id: 1, name: "علی محمدی", phone: "۰۷۰۰ ۱۱۱ ۲۲۲", delivered: 8}
+        ];
+        let isSellerLoggedIn = false;
 
-        // تغییر صفحه
-        function showPage(pageName) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById('page-' + pageName).classList.add('active');
-            
-            if (pageName === 'dashboard') checkAuth();
-            if (pageName === 'home') loadAllProducts();
-            if (pageName !== 'login') document.getElementById('login-error').style.display = 'none';
+        // === باز و بسته شدن منو ===
+        function toggleMenu() {
+            const menu = document.getElementById('mainMenu');
+            menu.classList.toggle('open');
         }
 
-        // بررسی ورود
-        function checkAuth() {
-            currentEmail = localStorage.getItem('currentSeller');
-            if (!currentEmail || !localStorage.getItem('seller_' + currentEmail)) {
-                alert('⚠️ لطفاً ابتدا وارد حساب خود شوید!');
-                showPage('login');
-                return false;
-            }
-            seller = JSON.parse(localStorage.getItem('seller_' + currentEmail));
-            document.getElementById('seller-details').innerHTML = 
-                '<strong>نام:</strong> ' + seller.name + ' | <strong>ایمیل:</strong> ' + seller.email + ' | <strong>واتساپ:</strong> ' + seller.whatsapp;
-            renderSellerProducts();
-            return true;
-        }
-
-        // پیش‌نمایش عکس‌های انتخاب شده
-        function previewImages(input) {
-            uploadedImages = [];
-            const container = document.getElementById('imgPreviewContainer');
-            container.innerHTML = '';
+        // === نمایش بخش مورد نظر ===
+        function showSection(sectionId) {
+            // پنهان کردن همه بخش‌ها
+            document.getElementById('customerPage').classList.add('hidden-section');
+            document.getElementById('sellerLogin').classList.add('hidden-section');
+            document.getElementById('sellerPanel').classList.add('hidden-section');
+            document.getElementById('deliveryPanel').classList.add('hidden-section');
             
-            if (input.files.length > 3) {
-                alert('⚠️ حداکثر ۳ عکس می‌توانید انتخاب کنید!');
-                input.value = '';
-                return;
-            }
-            
-            for (let i = 0; i < input.files.length; i++) {
-                const file = input.files[i];
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    uploadedImages.push(e.target.result);
-                    container.innerHTML += `<img src="${e.target.result}" alt="preview">`;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // ثبت‌نام
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('reg-email').value;
-            
-            if (localStorage.getItem('seller_' + email)) {
-                alert('❌ این ایمیل قبلاً ثبت شده است!');
-                return;
-            }
-
-            seller = {
-                name: document.getElementById('reg-name').value,
-                whatsapp: document.getElementById('reg-whatsapp').value,
-                email: email,
-                password: document.getElementById('reg-pass').value,
-                address: document.getElementById('reg-address').value,
-                products: []
-            };
-
-            localStorage.setItem('seller_' + email, JSON.stringify(seller));
-            localStorage.setItem('currentSeller', email);
-            alert('✅ ثبت‌نام موفق! خوش آمدید ' + seller.name);
-            showPage('dashboard');
-            this.reset();
-        });
-
-        // ورود
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const pass = document.getElementById('login-pass').value;
-            const stored = localStorage.getItem('seller_' + email);
-            
-            if (stored) {
-                const data = JSON.parse(stored);
-                if (data.password === pass) {
-                    localStorage.setItem('currentSeller', email);
-                    showPage('dashboard');
-                    document.getElementById('login-error').style.display = 'none';
-                    this.reset();
-                } else {
-                    document.getElementById('login-error').style.display = 'block';
-                }
+            // نمایش بخش مورد نظر
+            if (sectionId === 'sellerPanel' && !isSellerLoggedIn) {
+                document.getElementById('sellerLogin').classList.remove('hidden-section');
             } else {
-                document.getElementById('login-error').style.display = 'block';
+                document.getElementById(sectionId).classList.remove('hidden-section');
             }
-        });
+            
+            // بستن منو
+            document.getElementById('mainMenu').classList.remove('open');
+            window.scrollTo(0, 0);
+        }
 
-        // اضافه کردن محصول
-        document.getElementById('productForm').addEventListener('submit', function(e) {
+        // === ورود فروشنده ===
+        function sellerLogin() {
+            const email = document.getElementById('sellerEmail').value;
+            const phone = document.getElementById('sellerPhone').value;
+            const pass = document.getElementById('sellerPass').value;
+            
+            // اینجا می‌توانید بررسی کنید که آیا اطلاعات درست است یا خیر
+            if (email && phone && pass) {
+                isSellerLoggedIn = true;
+                showSection('sellerPanel');
+                alert('✅ خوش آمدید فروشنده گرامی!');
+            } else {
+                alert('❌ لطفاً تمام فیلدها را پر کنید');
+            }
+        }
+
+        // === اسکرول به فرم سفارش ===
+        function scrollToOrderForm(productName) {
+            document.getElementById('custProduct').value = productName;
+            document.getElementById('orderFormSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // === ثبت سفارش توسط مشتری ===
+        document.getElementById('orderForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            if (!checkAuth()) return;
-
-            const product = {
-                id: Date.now(),
-                sellerEmail: currentEmail,
-                name: document.getElementById('p-name').value,
-                desc: document.getElementById('p-desc').value,
-                price: document.getElementById('p-price').value,
-                discount: document.getElementById('p-discount').value || null,
-                category: document.getElementById('p-cat').value,
-                images: [...uploadedImages],
-                date: new Date().toLocaleDateString('fa-AF')
+            
+            const statusEl = document.getElementById('orderStatus');
+            statusEl.style.display = 'none';
+            
+            const orderData = {
+                name: document.getElementById('custName').value,
+                phone: document.getElementById('custPhone').value,
+                product: document.getElementById('custProduct').value,
+                address: document.getElementById('custAddress').value,
+                payment: document.getElementById('custPay').value,
+                deliveryFee: document.getElementById('deliveryFee').value,
+                note: document.getElementById('custNote').value || 'ندارد',
+                status: 'جدید',
+                deliverer: 'تعیین نشده',
+                id: Date.now()
             };
-
-            seller.products.unshift(product);
-            localStorage.setItem('seller_' + currentEmail, JSON.stringify(seller));
             
-            alert('✅ محصول با موفقیت اضافه شد!');
-            this.reset();
-            uploadedImages = [];
-            document.getElementById('imgPreviewContainer').innerHTML = '';
-            renderSellerProducts();
+            orders.push(orderData);
+            updateOrdersTable();
+            updateAssignDeliveryTable();
+            
+            // ارسال به تلگرام
+            const telegramMsg = `📦 سفارش جدید!\n👤 مشتری: ${orderData.name}\n📞 شماره: ${orderData.phone}\n🛍️ محصول: ${orderData.product}\n📍 آدرس: ${orderData.address}\n💳 پرداخت: ${orderData.payment}\n🚚 هزینه دلیوری: ${orderData.deliveryFee} افغانی\n📝 توضیحات: ${orderData.note}`;
+            
+            try {
+                await fetch(APPSCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message: telegramMsg})
+                });
+                
+                statusEl.style.display = 'block';
+                statusEl.style.background = '#f0fdf4';
+                statusEl.style.color = '#166534';
+                statusEl.style.border = '1px solid #bbf7d0';
+                statusEl.textContent = "✅ سفارش شما ثبت شد! با شما تماس گرفته می‌شود.";
+                this.reset();
+                
+            } catch (err) {
+                statusEl.style.display = 'block';
+                statusEl.style.background = '#fef2f2';
+                statusEl.style.color = '#dc2626';
+                statusEl.style.border = '1px solid #fecaca';
+                statusEl.textContent = "❌ خطا در ثبت سفارش. دوباره تلاش کنید.";
+            }
+            
+            setTimeout(() => { statusEl.style.display = 'none'; }, 10000);
         });
 
-        // نمایش محصولات فروشنده در داشبورد
-        function renderSellerProducts() {
-            const list = document.getElementById('product-list');
-            if (!seller.products.length) {
-                list.innerHTML = '<div class="empty-state">هنوز هیچ محصولی اضافه نکرده‌اید.</div>';
-                return;
-            }
-
-            list.innerHTML = '';
-            seller.products.forEach(prod => {
-                let imgsHtml = '';
-                if (prod.images && prod.images.length > 0) {
-                    prod.images.forEach(src => {
-                        imgsHtml += `<img src="${src}" class="prod-preview-img" alt="product">`;
-                    });
-                }
-                list.innerHTML += `
-                    <div class="product-item">
-                        <h4>${prod.name}</h4>
-                        <p>${prod.category} • ${prod.date}</p>
-                        <p>${prod.desc}</p>
-                        <p style="font-weight: bold; color: var(--success);">قیمت: ${prod.price} افغانی ${prod.discount ? '<span style="color:var(--danger)"> | تخفیف: ' + prod.discount + ' افغانی</span>' : ''}</p>
-                        <div>${imgsHtml}</div>
-                        <button class="del-btn" onclick="deleteProduct(${prod.id})">حذف محصول</button>
-                    </div>
+        // === به‌روزرسانی جدول سفارشات فروشنده ===
+        function updateOrdersTable() {
+            const tbody = document.getElementById('ordersTableBody');
+            tbody.innerHTML = '';
+            
+            orders.forEach((order, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.product}</td>
+                    <td>${order.name}</td>
+                    <td>${order.phone}</td>
+                    <td>${order.address}</td>
+                    <td>${order.deliverer}</td>
+                    <td><span style="color:${order.status === 'جدید' ? '#dc2626' : '#16a34a'}">${order.status}</span></td>
+                    <td>
+                        <button class="btn-whatsapp" onclick="sendWhatsApp('${order.phone}', '${order.name}', '${order.product}')">📱 واتساپ</button>
+                    </td>
                 `;
+                tbody.appendChild(row);
             });
         }
 
-        // بارگذاری همه محصولات در صفحه اصلی
-        function loadAllProducts() {
-            allProducts = [];
-            for (let key in localStorage) {
-                if (key.startsWith('seller_')) {
-                    const sellerData = JSON.parse(localStorage[key]);
-                    if (sellerData.products && sellerData.products.length > 0) {
-                        allProducts = allProducts.concat(sellerData.products);
-                    }
-                }
-            }
-            renderFilteredProducts();
+        // === ارسال پیام به واتساپ ===
+        function sendWhatsApp(phone, name, product) {
+            const msg = `سلام ${name} 👋\nسفارش شما برای ${product} دریافت شد. به زودی به دستتان می‌رسد. با سپاس از خرید شما ✅`;
+            // پاک کردن کاراکترهای اضافی از شماره
+            let cleanPhone = phone.replace(/[^0-9]/g, '');
+            if (cleanPhone.startsWith('0')) cleanPhone = '93' + cleanPhone.slice(1);
+            window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
-        // فیلتر محصولات
-        function filterProducts(category, btn) {
-            currentFilter = category;
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderFilteredProducts();
-        }
-
-        function renderFilteredProducts() {
-            const container = document.getElementById('productsContainer');
-            let filtered = currentFilter === 'all' ? allProducts : allProducts.filter(p => p.category === currentFilter);
+        // === اضافه کردن محصول جدید ===
+        function addProduct() {
+            const name = document.getElementById('newProdName').value;
+            const price = document.getElementById('newProdPrice').value;
+            const img = document.getElementById('newProdImg').value || 'https://via.placeholder.com/300x200/e2e8f0/475569?text=محصول+جدید';
             
-            if (!filtered.length) {
-                container.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;">محصولی در این دسته‌بندی موجود نیست.</div>';
+            if (!name || !price) {
+                alert('❌ لطفاً نام و قیمت را وارد کنید');
                 return;
             }
+            
+            const productsList = document.getElementById('productsList');
+            const newProduct = document.createElement('div');
+            newProduct.className = 'product-card';
+            newProduct.innerHTML = `
+                <img src="${img}" class="product-img" alt="${name}">
+                <div class="product-body">
+                    <h3 class="product-name">${name}</h3>
+                    <p class="product-price">${price} افغانی</p>
+                    <button class="order-btn" onclick="scrollToOrderForm('${name}')">📝 سفارش</button>
+                </div>
+            `;
+            productsList.insertBefore(newProduct, productsList.firstChild);
+            
+            // به‌روزرسانی آمار
+            const currentTotal = parseInt(document.getElementById('totalProducts').textContent);
+            document.getElementById('totalProducts').textContent = currentTotal + 1;
+            
+            document.getElementById('newProdName').value = '';
+            document.getElementById('newProdPrice').value = '';
+            document.getElementById('newProdImg').value = '';
+            
+            alert('✅ محصول اضافه شد!');
+        }
 
-            container.innerHTML = '';
-            filtered.forEach(prod => {
-                const imgSrc = (prod.images && prod.images.length > 0) ? prod.images[0] : '';
-                const priceDisplay = prod.discount 
-                    ? `<span class="price discounted">${prod.discount} افغانی</span> <span class="old-price">${prod.price} افغانی</span>`
-                    : `<span class="price">${prod.price} افغانی</span>`;
+        // === اضافه کردن دلیور جدید ===
+        function addDeliveryPerson() {
+            const name = document.getElementById('delivName').value;
+            const phone = document.getElementById('delivPhone').value;
+            
+            if (!name || !phone) {
+                alert('❌ لطفاً نام و شماره را وارد کنید');
+                return;
+            }
+            
+            const newDeliv = {
+                id: Date.now(),
+                name: name,
+                phone: phone,
+                delivered: 0
+            };
+            
+            deliverers.push(newDeliv);
+            updateDeliverersTable();
+            updateAssignDeliveryTable();
+            
+            document.getElementById('delivName').value = '';
+            document.getElementById('delivPhone').value = '';
+            alert('✅ دلیور ثبت شد!');
+        }
 
-                container.innerHTML += `
-                    <div class="product-card">
-                        <div class="product-img">
-                            ${imgSrc ? `<img src="${imgSrc}" alt="${prod.name}">` : '<span style="font-size:40px; color:#aaa;">📦</span>'}
-                        </div>
-                        <div class="product-info">
-                            <div class="product-name">${prod.name}</div>
-                            <div class="product-desc">${prod.desc}</div>
-                            <div class="product-price">
-                                ${priceDisplay}
-                                <button class="view-btn">مشاهده</button>
-                            </div>
-                        </div>
-                    </div>
+        // === به‌روزرسانی جدول دلیورها ===
+        function updateDeliverersTable() {
+            const tbody = document.getElementById('deliverersTableBody');
+            tbody.innerHTML = '';
+            
+            deliverers.forEach(deliv => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${deliv.name}</td>
+                    <td>${deliv.phone}</td>
+                    <td>${deliv.delivered}</td>
+                    <td><button class="btn-danger" onclick="removeDeliverer(this, ${deliv.id})">حذف</button></td>
                 `;
+                tbody.appendChild(row);
             });
         }
 
-        // حذف محصول
-        window.deleteProduct = function(id) {
-            if (confirm('آیا مطمئن هستید که این محصول را حذف کنید؟')) {
-                seller.products = seller.products.filter(p => p.id !== id);
-                localStorage.setItem('seller_' + currentEmail, JSON.stringify(seller));
-                renderSellerProducts();
+        // === حذف دلیور ===
+        function removeDeliverer(btn, id) {
+            if (confirm('آیا مطمئن هستید که این دلیور را حذف کنید؟')) {
+                deliverers = deliverers.filter(d => d.id !== id);
+                updateDeliverersTable();
+                updateAssignDeliveryTable();
             }
-        };
+        }
 
-        // خروج
-        window.logout = function() {
-            localStorage.removeItem('currentSeller');
-            showPage('home');
-            alert('✅ از حساب خود خارج شدید.');
-        };
+        // === به‌روزرسانی جدول اختصاص سفارش به دلیور ===
+        function updateAssignDeliveryTable() {
+            const tbody = document.getElementById('assignDeliveryBody');
+            tbody.innerHTML = '';
+            
+            orders.forEach((order, index) => {
+                if (order.status !== 'تحویل داده شده') {
+                    const row = document.createElement('tr');
+                    let options = deliverers.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+                    
+                    row.innerHTML = `
+                        <td>${order.product}</td>
+                        <td>${order.name}</td>
+                        <td>
+                            <select id="delivSelect-${index}">
+                                <option value="">انتخاب دلیور...</option>
+                                ${options}
+                            </select>
+                        </td>
+                        <td>
+                            <button class="btn-success" onclick="assignDelivery(${index})">✅ اختصاص</button>
+                            <button class="btn-whatsapp" onclick="sendToDeliverer(${index})">📱 اطلاع</button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                }
+            });
+        }
 
-        // بارگذاری محصولات هنگام باز شدن صفحه اصلی
-        document.addEventListener('DOMContentLoaded', function() {
-            loadAllProducts();
-        });
+        // === اختصاص سفارش به دلیور ===
+        function assignDelivery(orderIndex) {
+            const select = document.getElementById(`delivSelect-${orderIndex}`);
+            const delivId = parseInt(select.value);
+            
+            if (!delivId) {
+                alert('❌ لطفاً یک دلیور انتخاب کنید');
+                return;
+            }
+            
+            const deliv = deliverers.find(d => d.id === delivId);
+            orders[orderIndex].deliverer = deliv.name;
+            orders[orderIndex].status = 'در مسیر';
+            
+            updateOrdersTable();
+            updateAssignDeliveryTable();
+            
+            alert(`✅ سفارش به ${deliv.name} اختصاص داده شد!`);
+        }
+
+        // === ارسال اطلاعیه به دلیور از طریق واتساپ ===
+        function sendToDeliverer(orderIndex) {
+            const order = orders[orderIndex];
+            const deliv = deliverers.find(d => d.name === order.deliverer);
+            
+            if (!deliv) {
+                alert('❌ ابتدا دلیور را انتخاب کنید');
+                return;
+            }
+            
+            const msg = `🚚 سفارش جدید!\n📦 محصول: ${order.product}\n👤 مشتری: ${order.name}\n📞 شماره: ${order.phone}\n📍 آدرس: ${order.address}\n💰 هزینه دلیوری: ${order.deliveryFee} افغانی\n\nلطفاً در اسرع وقت تحویل دهید. با سپاس!`;
+            
+            let cleanPhone = deliv.phone.replace(/[^0-9]/g, '');
+            if (cleanPhone.startsWith('0')) cleanPhone = '93' + cleanPhone.slice(1);
+            window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
     </script>
 </body>
 </html>
